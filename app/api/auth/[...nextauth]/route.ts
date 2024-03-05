@@ -2,6 +2,18 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials"
 
+const login = ({ username, password }: any) => {
+    const user: any = {
+        name: "test"
+    }
+
+    if (user) {
+        return user;
+    } else {
+        throw new Error("User not Found!");
+    }
+}
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
@@ -33,6 +45,14 @@ export const authOptions: NextAuthOptions = {
                 //     return user
                 // }
 
+                const res = await login(credentials);
+                // const user = await res.json()
+                const user = res;
+
+                if (user) {
+                    return user
+                }
+
                 return null
             }
         }),
@@ -41,8 +61,10 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GITHUB_SECRET as string,
         }),
     ],
-
     secret: process.env.NEXTAUTH_SECRET as string,
+    pages: {
+        signIn: "/auth/signin",
+    },
 }
 
 const handler = NextAuth(authOptions)
