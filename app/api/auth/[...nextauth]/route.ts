@@ -1,11 +1,19 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials"
+import axios from "axios";
 
-const login = ({ username, password }: any) => {
-    const user: any = {
-        name: "test"
-    }
+const login = async ({ email, password }: any) => {
+    const user = await axios({
+        method: 'post',
+        url: 'http://localhost:5001/api/auth/signin',
+        data: {
+            // email,
+            // password,
+            email: "admin@ksp.com",
+            password: "password"
+        }
+    });
 
     if (user) {
         return user;
@@ -46,7 +54,6 @@ export const authOptions: NextAuthOptions = {
                 // }
 
                 const res = await login(credentials);
-                // const user = await res.json()
                 const user = res;
 
                 if (user) {
@@ -65,6 +72,7 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/auth/signin",
     },
+    debug: true
 }
 
 const handler = NextAuth(authOptions)
