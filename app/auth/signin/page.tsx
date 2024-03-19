@@ -19,7 +19,7 @@ const SignIn = () => {
     });
 
     if (response.ok) {
-      router.push("/");
+      router.push("/admin");
     } else {
       // Handle errors
       console.log(response.error)
