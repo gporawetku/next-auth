@@ -12,10 +12,12 @@ export async function middleware(request: NextRequest) {
 
     const { pathname } = request.nextUrl;
 
+    // client
     if (pathname.startsWith('/admin') && !user?.token) {
         return NextResponse.redirect(new URL('/auth/signin', request.url))
     }
 
+    // admin
     if (pathname === '/admin') {
         return NextResponse.rewrite(new URL('/admin/dashboard', request.url))
     }
