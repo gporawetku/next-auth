@@ -10,23 +10,22 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET
     })
 
-    console.log(user)
-
     const { pathname } = request.nextUrl;
+
+    if (pathname.startsWith('/admin') && !user?.token) {
+        return NextResponse.redirect(new URL('/auth/signin', request.url))
+    }
 
     if (pathname === '/admin') {
         return NextResponse.rewrite(new URL('/admin/dashboard', request.url))
     }
 
-    if (user?.token) {
-
-    } else {
-        return NextResponse.redirect(new URL('/', request.url))
+    if (pathname === '/auth' && !!user?.token) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url))
     }
-
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: ['/auth/:path*', '/admin/:path*'],
 }
